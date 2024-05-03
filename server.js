@@ -1,15 +1,19 @@
 const mysql2 = require('mysql2');
 const inquirer = require('inquirer');
 
-const connection = mysql2.createConnection({
+const Sequelize = require('sequelize');
+const sequelize = new Sequelize(
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASSWORD,
+    {
     host: 'localhost',
+    dialect: 'mysql',
     port: 3306,
-    user: 'root',
-    password: 'June152019!',
-    database: 'employee_db'
-},
-console.log("Connected to the employee_db database.")
-);
+})
+
+
+
 
 async function start() {
     const answers  = await inquirer.prompt([
@@ -28,6 +32,7 @@ async function start() {
             ]
 }
     ]);
+
 
 if (answers.action === 'View All Departments') {
     connection.query('SELECT * FROM department', function (err, res) {
@@ -80,15 +85,16 @@ if (answers.action === 'Add A Role') {
         },
         {
             type: 'input',
-            name: 'salary', 
+            name: 'salary',
             message: 'What is the salary of this role?'
-            
+           
         },
         {
             type: 'input',
             name: 'department_id',
             message: 'What is the department ID of this role?'
         }
+
 
     ]).then(function (answer) {
         connection.query('INSERT INTO role SET ?',
@@ -102,9 +108,11 @@ if (answers.action === 'Add A Role') {
                 console.log('Your role has been added!');
                 start();
 
+
         })
         });
 }
+
 
 if (answers.action === 'Add An Employee') {
     inquirer.prompt([
@@ -117,7 +125,7 @@ if (answers.action === 'Add An Employee') {
             type: 'input',
             name: 'last_name',
             message: 'What is the last name of the employee?'
-            
+           
         },
         {
             type: 'input',
@@ -129,7 +137,7 @@ if (answers.action === 'Add An Employee') {
             name: 'manager_id',
             message: 'What is the manager ID of this employee?'
         },
-        
+       
     ]).then(function (answer) {
         connection.query('INSERT INTO employee SET ?',
             {
@@ -146,6 +154,7 @@ if (answers.action === 'Add An Employee') {
     )});
 }
 
+
 if (answers.action === 'Update An Employee Role') {
     inquirer.prompt([
         {
@@ -156,9 +165,9 @@ if (answers.action === 'Update An Employee Role') {
         {
             type: 'input',
             name: 'role_id',
-            message: 'What is the role ID of the employee you would like to update?'   
+            message: 'What is the role ID of the employee you would like to update?'  
         },
-        
+       
     ]).then(function (answer) {
         connection.query('UPDATE employee SET ? WHERE ?',
             [
@@ -177,6 +186,9 @@ if (answers.action === 'Update An Employee Role') {
     )});
 }}
 
+
 start();
 
-    
+
+   
+
