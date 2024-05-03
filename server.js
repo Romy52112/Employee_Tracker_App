@@ -1,16 +1,16 @@
 const mysql2 = require('mysql2');
 const inquirer = require('inquirer');
 
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
-    {
+const connection = mysql2.createConnection({
     host: 'localhost',
-    dialect: 'mysql',
     port: 3306,
-})
+    user: 'root',
+    password: 'June152019!',
+    database: 'employee_db'
+},
+console.log("Connected to the employee_db database.")
+);
+
 
 
 
@@ -56,25 +56,18 @@ if (answers.action === 'View All Employees') {
     });
 }
 if (answers.action === 'Add A Department') {
-    inquirer.prompt([
+    const answers = await inquirer.prompt([
         {
             type: 'input',
             name: 'department',
             message: 'What department would you like to add?'
         }
-    ]).then(function (answer) {
-        connection.query('INSERT INTO department SET ?',
-            {
-                department: answer.department
-            },
-            function (err) {
-                if (err) throw err;
-                console.log('Your department has been added!');
-                start();
-            }
-        );
-            }
-    )
+    ])
+    connection.query('INSERT INTO department (department_name) VALUES (?)',[answers.newDepartment], (err, result) => {
+            if (err) throw err;
+            console.table(result);
+            start();
+    });
 }
 if (answers.action === 'Add A Role') {
     inquirer.prompt([
@@ -96,12 +89,12 @@ if (answers.action === 'Add A Role') {
         }
 
 
-    ]).then(function (answer) {
+    ]).then(function (answers) {
         connection.query('INSERT INTO role SET ?',
             {
-                title: answer.title,
-                salary: answer.salary,
-                department_id: answer.department_id
+                title: answers.title,
+                salary: answers.salary,
+                department_id: answers.department_id
             },
             function (err) {
                 if (err) throw err;
@@ -138,13 +131,13 @@ if (answers.action === 'Add An Employee') {
             message: 'What is the manager ID of this employee?'
         },
        
-    ]).then(function (answer) {
+    ]).then(function (answers) {
         connection.query('INSERT INTO employee SET ?',
             {
-                first_name: answer.first_name,
-                last_name: answer.last_name,
-                role_id: answer.role_id,
-                manager_id: answer.manager_id
+                first_name: answers.first_name,
+                last_name: answers.last_name,
+                role_id: answers.role_id,
+                manager_id: answers.manager_id
             },
             function (err) {
                 if (err) throw err;
@@ -168,14 +161,14 @@ if (answers.action === 'Update An Employee Role') {
             message: 'What is the role ID of the employee you would like to update?'  
         },
        
-    ]).then(function (answer) {
+    ]).then(function (answers) {
         connection.query('UPDATE employee SET ? WHERE ?',
             [
                 {
-                    role_id: answer.role_id
+                    role_id: answers.role_id
                 },
                 {
-                    employee_id: answer.employee_id
+                    employee_id: answers.employee_id
                 }
             ],
             function (err) {
