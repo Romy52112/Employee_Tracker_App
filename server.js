@@ -11,10 +11,6 @@ const connection = mysql2.createConnection({
 console.log("Connected to the employee_db database.")
 );
 
-
-
-
-
 async function start() {
     const answers  = await inquirer.prompt([
         {
@@ -36,7 +32,6 @@ async function start() {
             ]
 }
     ]);
-
 
 if (answers.action === 'View All Departments') {
     connection.query('SELECT * FROM department', function (err, res) {
@@ -98,8 +93,6 @@ if (answers.action === 'Add A Role') {
             start();
 });
 }
-
-
 if (answers.action === 'Add An Employee') {
     const answers = await inquirer.prompt([
         {
@@ -131,8 +124,6 @@ if (answers.action === 'Add An Employee') {
             start();
     });
 }
-
-
 if (answers.action === 'Update An Employee Role') {
     const answers = await inquirer.prompt([
         {
@@ -198,10 +189,7 @@ if (answers.action === 'Delete An Employee') {
             start();
         })
     }
-    
 }
-
-
 start();
 
 
