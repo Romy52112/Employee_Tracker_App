@@ -29,6 +29,10 @@ async function start() {
                 'Add A Role',
                 'Add An Employee',
                 'Update An Employee Role',
+                'Delete A Department',
+                'Delete A Role',
+                'Delete An Employee',
+                
             ]
 }
     ]);
@@ -63,124 +67,143 @@ if (answers.action === 'Add A Department') {
             message: 'What department would you like to add?'
         }
     ])
-    connection.query('INSERT INTO department (department_name) VALUES (?)',[answers.newDepartment], (err, result) => {
+    connection.query('INSERT INTO department (department_name) VALUES (?)',[answers.department], (err, result) => {
             if (err) throw err;
-            console.table(result);
+            // console.table(result);
             start();
     });
 }
 if (answers.action === 'Add A Role') {
-    inquirer.prompt([
+    const answers = await inquirer.prompt([
         {
             type: 'input',
-            name: 'title',
+            name: 'newRole',
             message: 'What role would you like to add?'
         },
         {
             type: 'input',
-            name: 'salary',
+            name: 'newSalary',
             message: 'What is the salary of this role?'
            
         },
         {
             type: 'input',
-            name: 'department_id',
+            name: 'newDepartmentId',
             message: 'What is the department ID of this role?'
         }
-
-
-    ]).then(function (answers) {
-        connection.query('INSERT INTO role SET ?',
-            {
-                title: answers.title,
-                salary: answers.salary,
-                department_id: answers.department_id
-            },
-            function (err) {
-                if (err) throw err;
-                console.log('Your role has been added!');
-                start();
-
-
-        })
-        });
+    ])
+        connection.query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)',[answers.newRole, answers.newSalary, answers.newDepartmentId], (err, result) => {
+            if (err) throw err;
+            // console.table(result);
+            start();
+});
 }
 
 
 if (answers.action === 'Add An Employee') {
-    inquirer.prompt([
+    const answers = await inquirer.prompt([
         {
             type: 'input',
-            name: 'first_name',
+            name: 'firstName',
             message: 'What is the first name of the employee?'
         },
         {
             type: 'input',
-            name: 'last_name',
+            name: 'lastName',
             message: 'What is the last name of the employee?'
            
         },
         {
             type: 'input',
-            name: 'role_id',
+            name: 'newRoleId',
             message: 'What is the role ID of this employee?'
         },
         {
             type: 'input',
-            name: 'manager_id',
+            name: 'managerId',
             message: 'What is the manager ID of this employee?'
-        },
+        }
        
-    ]).then(function (answers) {
-        connection.query('INSERT INTO employee SET ?',
-            {
-                first_name: answers.first_name,
-                last_name: answers.last_name,
-                role_id: answers.role_id,
-                manager_id: answers.manager_id
-            },
-            function (err) {
-                if (err) throw err;
-                console.log('Your employee has been added!');
-                start();
-            }
-    )});
+    ])
+    connection.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)',[answers.firstName, answers.lastName, answers.newRoleId, answers.managerId], (err, result) => {
+            if (err) throw err;
+            // console.table(result);
+            start();
+    });
 }
 
 
 if (answers.action === 'Update An Employee Role') {
-    inquirer.prompt([
+    const answers = await inquirer.prompt([
         {
             type: 'input',
-            name: 'employee_id',
+            name: 'updateEmployee',
             message: 'What is the employee ID of the employee you would like to update?'
         },
         {
             type: 'input',
-            name: 'role_id',
+            name: 'updateRole',
             message: 'What is the role ID of the employee you would like to update?'  
         },
        
-    ]).then(function (answers) {
-        connection.query('UPDATE employee SET ? WHERE ?',
-            [
-                {
-                    role_id: answers.role_id
-                },
-                {
-                    employee_id: answers.employee_id
-                }
-            ],
-            function (err) {
-                if (err) throw err;
-                console.log('Your employee has been updated!');
-                start();
+    ])
+    connection.query('UPDATE employee SET role_id = ? WHERE id = ?',[answers.updateRole, answers.updateEmployee], (err, result) => {
+        if (err) throw err;
+        // console.table(result);
+        start();
+    });
+}
+if (answers.action === 'Delete A Department') {
+    const answers = await inquirer.prompt([
+        {
+            type: 'input',
+            name: 'deleteDepartment',
+            message: 'What is the department ID of the department you would like to delete?'
+        }
+    ]);
+
+    connection.query('DELETE FROM department WHERE id = ?', [answers.deleteDepartment], (err, result) => {
+        if (err) throw err;
+        // console.table(result);
+        start();
+    });
+}
+if (answers.action === 'Delete A Role') {
+        const answers = await inquirer.prompt([
+            {
+                type: 'input',
+                name: 'deleteRole',
+                message: 'What is the role ID of the role you would like to delete?'
             }
-    )});
-}}
+           
+        ])
+        connection.query('DELETE FROM role WHERE id = ?',[answers.deleteRole], (err, result) => {
+            if (err) throw err;
+            // console.table(result);
+            start();
+        })
+    }
+if (answers.action === 'Delete An Employee') {
+        const answers = await inquirer.prompt([
+            {
+                type: 'input',
+                name: 'deleteEmployee',
+                message: 'What is the employee ID of the employee you would like to delete?'
+            }
+           
+        ])
+        connection.query('DELETE FROM employee WHERE id = ?',[answers.deleteEmployee], (err, result) => {
+            if (err) throw err;
+            // console.table(result);
+            start();
+        })
+    }
+    
+}
 
 
 start();
+
 
 
    
