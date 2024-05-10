@@ -115,10 +115,24 @@ if (answers.action === 'Add An Employee') {
             type: 'input',
             name: 'managerId',
             message: 'What is the manager ID of this employee?'
-        }
-       
+        },
+        {
+            type: 'input',
+            name: 'title',
+            message: 'What is the title of this employee?'
+        },
+        {
+            type: 'input',
+            name: 'departmentName',
+            message: 'What is the department name of this employee?'
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'What is the salary of this employee?' 
+        } 
     ])
-    connection.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)',[answers.firstName, answers.lastName, answers.newRoleId, answers.managerId], (err, result) => {
+    connection.query('INSERT INTO employee (first_name, last_name, role_id, manager_id, title, department_name, salary) VALUES (?, ?, ?, ?, ?, ?, ?)',[answers.firstName, answers.lastName, answers.newRoleId, answers.managerId, answers.title, answers.departmentName, answers.salary], (err, result) => {
             if (err) throw err;
             // console.table(result);
             start();
@@ -130,19 +144,19 @@ if (answers.action === 'Update An Employee Role') {
             type: 'input',
             name: 'updateEmployee',
             message: 'What is the employee ID of the employee you would like to update?'
-        },
-        {
+       },
+       {
             type: 'input',
             name: 'updateRole',
-            message: 'What is the role ID of the employee you would like to update?'  
-        },
+            message: 'What is the new role you want to  the employee you would like to update?'
+       }
        
     ])
-    connection.query('UPDATE employee SET role_id = ? WHERE id = ?',[answers.updateRole, answers.updateEmployee], (err, result) => {
+    connection.query('UPDATE employee SET role_id = ? WHERE id = ?',[answers.updateEmployee, answers.updateRole], (err, result) => {
         if (err) throw err;
         // console.table(result);
         start();
-    });
+    })
 }
 if (answers.action === 'Delete A Department') {
     const answers = await inquirer.prompt([
@@ -195,4 +209,3 @@ start();
 
 
    
-
