@@ -2,6 +2,9 @@
   ## Project Title 
   EMPLOYEE_TRACKER_APP
   ## License
+
+  ## Walkthrough Video
+  https://drive.google.com/file/d/1vMaoQuJeEJOouJczJbnflS8c_ktxZ-1U/view?usp=sharingLinks to an external site.
    
   ## Description
   This is a tracker of employee where the user can check or view all department, the employee roles, and list of employee. The user can also add a department, role, employee, and also can update the role on an employee.
